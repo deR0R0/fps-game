@@ -1,0 +1,8 @@
+{
+	"InstallScripts" : 
+	[
+		"/Users/rorozee1/Documents/Programming Projects/C++/fps-game/build/cmake_install.cmake",
+		"/Users/rorozee1/Documents/Programming Projects/C++/fps-game/build/WindowLib/cmake_install.cmake"
+	],
+	"Parallel" : false
+}

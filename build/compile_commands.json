@@ -1,0 +1,14 @@
+[
+{
+  "directory": "/Users/rorozee1/Documents/Programming Projects/C++/fps-game/build",
+  "command": "/usr/bin/c++  -I\"/Users/rorozee1/Documents/Programming Projects/C++/fps-game/WindowLib/include\" -std=gnu++20 -arch arm64 -o CMakeFiles/FPSGame.dir/src/main.cpp.o -c \"/Users/rorozee1/Documents/Programming Projects/C++/fps-game/src/main.cpp\"",
+  "file": "/Users/rorozee1/Documents/Programming Projects/C++/fps-game/src/main.cpp",
+  "output": "CMakeFiles/FPSGame.dir/src/main.cpp.o"
+},
+{
+  "directory": "/Users/rorozee1/Documents/Programming Projects/C++/fps-game/build/WindowLib",
+  "command": "/usr/bin/c++  -I\"/Users/rorozee1/Documents/Programming Projects/C++/fps-game/WindowLib/include\" -I\"/Users/rorozee1/Documents/Programming Projects/C++/fps-game/WindowLib/src\" -std=gnu++20 -arch arm64 -Wall -Wextra -Wpedantic -Werror -o CMakeFiles/WindowLib.dir/src/Window.cpp.o -c \"/Users/rorozee1/Documents/Programming Projects/C++/fps-game/WindowLib/src/Window.cpp\"",
+  "file": "/Users/rorozee1/Documents/Programming Projects/C++/fps-game/WindowLib/src/Window.cpp",
+  "output": "WindowLib/CMakeFiles/WindowLib.dir/src/Window.cpp.o"
+}
+]
