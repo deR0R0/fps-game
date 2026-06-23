@@ -1,6 +1,0 @@
-/Users/rorozee1/Documents/Programming Projects/C++/fps-game/build/CMakeFiles/FPSGame.dir
-/Users/rorozee1/Documents/Programming Projects/C++/fps-game/build/CMakeFiles/edit_cache.dir
-/Users/rorozee1/Documents/Programming Projects/C++/fps-game/build/CMakeFiles/rebuild_cache.dir
-/Users/rorozee1/Documents/Programming Projects/C++/fps-game/build/WindowLib/CMakeFiles/WindowLib.dir
-/Users/rorozee1/Documents/Programming Projects/C++/fps-game/build/WindowLib/CMakeFiles/edit_cache.dir
-/Users/rorozee1/Documents/Programming Projects/C++/fps-game/build/WindowLib/CMakeFiles/rebuild_cache.dir
