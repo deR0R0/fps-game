@@ -1,6 +1,34 @@
+#include <glad/gl.h>
+
 #include "window.h"
+#include <cstddef>
+#include <cstdlib>
 #include <iostream>
 
-void WindowLib::window::print() {
-    std::cout << "Hello world from window!" << std::endl;
+#include <GLFW/glfw3.h>
+
+using namespace std;
+void WindowLib::Window::init() {
+    if (!glfwInit()) {
+        cout << "ERROR: Couldn't init GLFW." << endl;
+        exit(1);
+    }
+
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+}
+
+GLFWwindow *WindowLib::Window::create_window() {
+    GLFWwindow *window = glfwCreateWindow(640, 480, "Test", NULL, NULL);
+    if (!window) {
+        cout << "ERROR: Couldn't create window." << endl;
+        exit(1);
+    }
+
+    glfwMakeContextCurrent(window);
+    gladLoadGL(glfwGetProcAddress);
+    glfwSwapInterval(1);
+
+    return window;
 }

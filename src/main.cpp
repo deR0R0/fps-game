@@ -1,10 +1,20 @@
+#include "GLFW/glfw3.h"
 #include "window.h"
 #include <iostream>
 
-int main() {
-    std::cout << "Hello from main file" << std::endl;
-    auto window = new WindowLib::window();
+static void glfwError(int id, const char *description) {
+    std::cout << description << std::endl;
+}
 
-    window->print();
+int main() {
+    glfwSetErrorCallback(&glfwError);
+    std::cout << "Hello from main file" << std::endl;
+    // init the windowlib to run glfwinit
+    WindowLib::Window::init();
+    GLFWwindow *window = WindowLib::Window::create_window();
+    while (!glfwWindowShouldClose(window)) {
+        glfwSwapBuffers(window);
+        glfwPollEvents();
+    }
     return 0;
 }

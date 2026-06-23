@@ -1,8 +1,10 @@
 #pragma once
 
+#include "GLFW/glfw3.h"
 namespace WindowLib {
-class window {
+class Window {
 public:
-    void print();
+    static void init();
+    static GLFWwindow *create_window();
 };
 } // namespace WindowLib

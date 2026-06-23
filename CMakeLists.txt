@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.23)
-project(FPSGame LANGUAGES CXX)
+project(FPSGame LANGUAGES CXX C)
 
 include(FetchContent)
 
@@ -26,4 +26,4 @@ add_executable(FPSGame
   src/main.cpp
 )
 
-target_link_libraries(FPSGame PRIVATE WindowLib)
+target_link_libraries(FPSGame PUBLIC WindowLib glfw)
