@@ -18,6 +18,7 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
+add_subdirectory(Core)
 add_subdirectory(WindowLib)
 #add_subdirectory(RenderLib)
 #add_subdirectory(GameEngine)FPSGame
@@ -26,4 +27,4 @@ add_executable(FPSGame
   src/main.cpp
 )
 
-target_link_libraries(FPSGame PUBLIC WindowLib glfw)
+target_link_libraries(FPSGame PUBLIC Core WindowLib glfw)
