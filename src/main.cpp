@@ -6,7 +6,8 @@
 using namespace Core;
 
 static void glfwError(int id, const char *description) {
-    std::cout << description << std::endl;
+    Logger::getInstance()->err("Oops! There seems to be an error with glfw:");
+    Logger::getInstance()->err(description);
 }
 
 int main() {
