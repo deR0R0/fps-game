@@ -1,2 +1,5 @@
 # build
 build/
+
+# mac stuff
+.DS_Store
