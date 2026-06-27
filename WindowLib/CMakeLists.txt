@@ -1,4 +1,4 @@
-add_library(WindowLib STATIC src/Window.cpp src/gl.c)
+add_library(WindowLib STATIC src/Window.cpp)
 
 target_link_libraries(WindowLib PUBLIC Core glfw)
 

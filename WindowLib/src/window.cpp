@@ -1,9 +1,6 @@
-#include <glad/gl.h>
-
 #include "window.h"
 #include <cstddef>
 #include <cstdlib>
-#include <iostream>
 #include <logger.h>
 
 #include <GLFW/glfw3.h>
@@ -28,7 +25,6 @@ GLFWwindow *WindowLib::Window::create_window() {
     }
 
     glfwMakeContextCurrent(window);
-    gladLoadGL(glfwGetProcAddress);
     glfwSwapInterval(1);
 
     Core::Logger::getInstance()->info("Successfully created window");

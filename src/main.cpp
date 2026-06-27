@@ -1,7 +1,7 @@
 #include "GLFW/glfw3.h"
 #include "logger.h"
 #include "window.h"
-#include <iostream>
+#include <string>
 
 using namespace Core;
 
@@ -20,6 +20,7 @@ int main() {
     // init the windowlib to run glfwinit
     WindowLib::Window::init();
     GLFWwindow *window = WindowLib::Window::create_window();
+
     while (!glfwWindowShouldClose(window)) {
         glfwSwapBuffers(window);
         glfwPollEvents();
