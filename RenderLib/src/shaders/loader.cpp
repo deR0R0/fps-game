@@ -59,6 +59,30 @@ void ShaderLoader::loadShaders() {
         }
     }
     */
+
+    // import to a shader program
+    int success;
+    char log[512];
+
+    unsigned int shaderProgram;
+    shaderProgram = glCreateProgram();
+    glAttachShader(shaderProgram, vertexShaderID);
+    glAttachShader(shaderProgram, fragmentShaderID);
+    glLinkProgram(shaderProgram);
+
+    // errors?
+    glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
+    if (!success) {
+        glGetProgramInfoLog(shaderProgram, 512, NULL, log);
+        Logger::getInstance()->err("Error linking shader program: " +
+                                   string(log));
+    } else {
+        glUseProgram(shaderProgram);
+    }
+
+    // ensure shader objects are gone
+    glDeleteShader(vertexShaderID);
+    glDeleteShader(fragmentShaderID);
 }
 
 unsigned int ShaderLoader::compileShader(string *shaderData, int SHADER_TYPE,
