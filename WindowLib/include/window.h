@@ -5,6 +5,6 @@ namespace WindowLib {
 class Window {
 public:
     static void init();
-    static GLFWwindow *create_window();
+    static GLFWwindow *createWindow();
 };
 } // namespace WindowLib

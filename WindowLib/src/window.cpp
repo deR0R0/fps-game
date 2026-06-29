@@ -17,7 +17,7 @@ void WindowLib::Window::init() {
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 }
 
-GLFWwindow *WindowLib::Window::create_window() {
+GLFWwindow *WindowLib::Window::createWindow() {
     GLFWwindow *window = glfwCreateWindow(640, 480, "Test", NULL, NULL);
     if (!window) {
         Core::Logger::getInstance()->err("ERROR: Couldn't create window.");

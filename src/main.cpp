@@ -1,5 +1,8 @@
+#include <glad/gl.h>
+
 #include "GLFW/glfw3.h"
 #include "logger.h"
+#include "shaders/loader.h"
 #include "window.h"
 #include <string>
 
@@ -19,11 +22,15 @@ int main() {
 
     // init the windowlib to run glfwinit
     WindowLib::Window::init();
-    GLFWwindow *window = WindowLib::Window::create_window();
+    GLFWwindow *window = WindowLib::Window::createWindow();
+
+    RenderLib::ShaderLoader::loadShaders();
 
     while (!glfwWindowShouldClose(window)) {
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
+
+    glfwTerminate();
     return 0;
 }
