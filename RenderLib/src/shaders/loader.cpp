@@ -18,7 +18,7 @@ using namespace std;
 unsigned int ShaderLoader::sProgram = 0;
 
 void ShaderLoader::use() { glUseProgram(ShaderLoader::sProgram); }
-
+void ShaderLoader::deleteProgram() { glDeleteProgram(ShaderLoader::sProgram); }
 // discovers every .glsl file in this file directory and loads them to a shader
 // program
 void ShaderLoader::loadShaders() {

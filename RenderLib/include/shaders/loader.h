@@ -8,6 +8,7 @@ class ShaderLoader {
 public:
     static void loadShaders();
     static void use();
+    static void deleteProgram();
 
 private:
     static string getShaderFromFile(string path);

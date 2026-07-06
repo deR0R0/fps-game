@@ -101,6 +101,8 @@ int main() {
     ImGui_ImplGlfw_Shutdown();
     ImGui::DestroyContext();
 
+    RenderLib::ShaderLoader::deleteProgram();
+
     // cleanup vertex buffer stuff
     glDeleteVertexArrays(1, &VAO);
     glDeleteBuffers(1, &VBO);
