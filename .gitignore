@@ -3,3 +3,6 @@ build/
 
 # mac stuff
 .DS_Store
+
+# imgui
+imgui.ini

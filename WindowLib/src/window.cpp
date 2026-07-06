@@ -18,7 +18,7 @@ void WindowLib::Window::init() {
 }
 
 GLFWwindow *WindowLib::Window::createWindow() {
-    GLFWwindow *window = glfwCreateWindow(640, 480, "Test", NULL, NULL);
+    GLFWwindow *window = glfwCreateWindow(1000, 1000, "FPSGame", NULL, NULL);
     if (!window) {
         Core::Logger::getInstance()->err("ERROR: Couldn't create window.");
         exit(1);
