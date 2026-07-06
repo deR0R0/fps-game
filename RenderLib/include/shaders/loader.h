@@ -7,10 +7,12 @@ namespace RenderLib {
 class ShaderLoader {
 public:
     static void loadShaders();
+    static void use();
 
 private:
     static string getShaderFromFile(string path);
     static unsigned int compileShader(string *shaderData, int SHADER_TYPE,
                                       string type = "UNKNOWN");
+    static unsigned int sProgram;
 };
 } // namespace RenderLib

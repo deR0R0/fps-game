@@ -15,6 +15,10 @@ using namespace Core;
 using namespace RenderLib;
 using namespace std;
 
+unsigned int ShaderLoader::sProgram = 0;
+
+void ShaderLoader::use() { glUseProgram(ShaderLoader::sProgram); }
+
 // discovers every .glsl file in this file directory and loads them to a shader
 // program
 void ShaderLoader::loadShaders() {
@@ -77,6 +81,7 @@ void ShaderLoader::loadShaders() {
         Logger::getInstance()->err("Error linking shader program: " +
                                    string(log));
     } else {
+        ShaderLoader::sProgram = shaderProgram;
         glUseProgram(shaderProgram);
     }
 

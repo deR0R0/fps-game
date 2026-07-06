@@ -20,10 +20,6 @@ static void glfwError(int id, const char *description) {
 int main() {
     glfwSetErrorCallback(&glfwError);
 
-    Logger::getInstance()->info("Test Info Logger");
-    Logger::getInstance()->warn("Test Warn Logger");
-    Logger::getInstance()->err("Test Error Logger");
-
     // init the windowlib to run glfwinit
     WindowLib::Window::init();
     GLFWwindow *window = WindowLib::Window::createWindow();
@@ -33,28 +29,41 @@ int main() {
     // TODO: move all rendering logic to renderlib
 
     // render triangle
-    float vertices[] = {-0.5f, -0.5f, 0.0f, 0.5f, -0.5f,
-                        0.0f,  0.0f,  0.5f, 0.0f};
+    float vertices[] = {-0.5f,     -0.5f * float(sqrt(3)) / 3,    0.0f, // 0
+                        0.5f,      -0.5f * float(sqrt(3)) / 3,    0.0f, // 1
+                        0.0f,      0.5f * float(sqrt(3)) * 2 / 3, 0.0f, // 1
+                        -0.5f / 2, 0.5f * float(sqrt(3)) / 6,     0.0f,
+                        0.5f / 2,  0.5f * float(sqrt(3)) / 6,     0.0f,
+                        0.0f,      -0.5f * float(sqrt(3)) / 3,    0.0f};
 
-    unsigned int VBO, VAO;
+    int indices[] = {0, 3, 5, 3, 2, 4, 5, 4, 1};
+
+    unsigned int VBO, VAO, EBO;
 
     glGenVertexArrays(1, &VAO); // generate before other buffers
 
     // generate buffers for vertices
     glGenBuffers(1, &VBO);
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glGenBuffers(1, &EBO);
 
     glBindVertexArray(VAO);
 
     // store vertex data
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices,
+                 GL_STATIC_DRAW);
+
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float),
                           (void *)0);
     glEnableVertexAttribArray(0);
 
+    // unbind all by setting value to 0
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
@@ -63,6 +72,9 @@ int main() {
     ImGui::StyleColorsDark();
     ImGui_ImplGlfw_InitForOpenGL(window, true);
     ImGui_ImplOpenGL3_Init("#version 330");
+
+    // set to wireframe mode
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
     while (!glfwWindowShouldClose(window)) {
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
@@ -73,13 +85,14 @@ int main() {
         ImGui::NewFrame();
 
         glBindVertexArray(VAO);
-        glDrawArrays(GL_TRIANGLES, 0, 3);
+        glDrawElements(GL_TRIANGLES, 9, GL_UNSIGNED_INT, 0);
 
         ImGui::ShowDemoWindow();
 
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
+        RenderLib::ShaderLoader::use();
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
