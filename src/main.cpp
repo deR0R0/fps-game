@@ -10,6 +10,10 @@
 #include "window.h"
 #include <string>
 
+#include <mesh/ebo.h>
+#include <mesh/vao.h>
+#include <mesh/vbo.h>
+
 using namespace Core;
 
 static void glfwError(int id, const char *description) {
@@ -36,34 +40,21 @@ int main() {
                         0.5f / 2,  0.5f * float(sqrt(3)) / 6,     0.0f,
                         0.0f,      -0.5f * float(sqrt(3)) / 3,    0.0f};
 
-    int indices[] = {0, 3, 5, 3, 2, 4, 5, 4, 1};
+    unsigned int indices[] = {0, 3, 5, 3, 2, 4, 5, 4, 1};
 
-    unsigned int VBO, VAO, EBO;
+    Logger::getInstance()->info("Hello, i'm issue 1");
+    VAO vao;
+    vao.bind();
 
-    glGenVertexArrays(1, &VAO); // generate before other buffers
+    Logger::getInstance()->info("Hello, i'm issue 1");
+    VBO vbo(vertices, sizeof(vertices));
+    EBO ebo(indices, sizeof(indices));
 
-    // generate buffers for vertices
-    glGenBuffers(1, &VBO);
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glGenBuffers(1, &EBO);
-
-    glBindVertexArray(VAO);
-
-    // store vertex data
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices,
-                 GL_STATIC_DRAW);
-
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float),
-                          (void *)0);
-    glEnableVertexAttribArray(0);
-
-    // unbind all by setting value to 0
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindVertexArray(0);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+    Logger::getInstance()->info("Hello, i'm issue 1");
+    vao.linkVBO(vbo, 0);
+    vao.unbind();
+    vbo.unbind();
+    ebo.unbind();
 
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
@@ -83,8 +74,7 @@ int main() {
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
-
-        glBindVertexArray(VAO);
+        vao.bind();
         glDrawElements(GL_TRIANGLES, 9, GL_UNSIGNED_INT, 0);
 
         ImGui::ShowDemoWindow();
@@ -101,11 +91,11 @@ int main() {
     ImGui_ImplGlfw_Shutdown();
     ImGui::DestroyContext();
 
+    // cleanup
     RenderLib::ShaderLoader::deleteProgram();
-
-    // cleanup vertex buffer stuff
-    glDeleteVertexArrays(1, &VAO);
-    glDeleteBuffers(1, &VBO);
+    vao.deleteVAO();
+    vbo.deleteVBO();
+    ebo.deleteEBO();
 
     glfwTerminate();
     return 0;

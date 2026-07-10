@@ -9,6 +9,9 @@ add_library(RenderLib STATIC
   vendor/imgui/src/imgui_widgets.cpp
 
   src/shaders/loader.cpp
+  src/mesh/vbo.cpp
+  src/mesh/ebo.cpp
+  src/mesh/vao.cpp
 )
 
 target_link_libraries(RenderLib PUBLIC Core WindowLib)
