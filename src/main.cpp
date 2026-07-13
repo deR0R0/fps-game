@@ -42,15 +42,12 @@ int main() {
 
     unsigned int indices[] = {0, 3, 5, 3, 2, 4, 5, 4, 1};
 
-    Logger::getInstance()->info("Hello, i'm issue 1");
     VAO vao;
     vao.bind();
 
-    Logger::getInstance()->info("Hello, i'm issue 1");
     VBO vbo(vertices, sizeof(vertices));
     EBO ebo(indices, sizeof(indices));
 
-    Logger::getInstance()->info("Hello, i'm issue 1");
     vao.linkVBO(vbo, 0);
     vao.unbind();
     vbo.unbind();
@@ -65,7 +62,7 @@ int main() {
     ImGui_ImplOpenGL3_Init("#version 330");
 
     // set to wireframe mode
-    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
     while (!glfwWindowShouldClose(window)) {
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
