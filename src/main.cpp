@@ -32,13 +32,14 @@ int main() {
 
     // TODO: move all rendering logic to renderlib
 
-    // render triangle
-    float vertices[] = {-0.5f,     -0.5f * float(sqrt(3)) / 3,    0.0f, // 0
-                        0.5f,      -0.5f * float(sqrt(3)) / 3,    0.0f, // 1
-                        0.0f,      0.5f * float(sqrt(3)) * 2 / 3, 0.0f, // 1
-                        -0.5f / 2, 0.5f * float(sqrt(3)) / 6,     0.0f,
-                        0.5f / 2,  0.5f * float(sqrt(3)) / 6,     0.0f,
-                        0.0f,      -0.5f * float(sqrt(3)) / 3,    0.0f};
+    // triangle vertices (first 3) and rgb color values for second set of 3
+    float vertices[] = {
+        -0.5f,     -0.5f * float(sqrt(3)) / 3,    0.0f, 0.8f, 0.3f,  0.02f,
+        0.5f,      -0.5f * float(sqrt(3)) / 3,    0.0f, 0.8f, 0.3f,  0.02f,
+        0.0f,      0.5f * float(sqrt(3)) * 2 / 3, 0.0f, 1.0f, 0.6f,  0.32f,
+        -0.5f / 2, 0.5f * float(sqrt(3)) / 6,     0.0f, 0.9f, 0.45f, 0.17f,
+        0.5f / 2,  0.5f * float(sqrt(3)) / 6,     0.0f, 0.9f, 0.45f, 0.17f,
+        0.0f,      -0.5f * float(sqrt(3)) / 3,    0.0f, 0.8f, 0.3f,  0.02f};
 
     unsigned int indices[] = {0, 3, 5, 3, 2, 4, 5, 4, 1};
 
@@ -48,7 +49,9 @@ int main() {
     VBO vbo(vertices, sizeof(vertices));
     EBO ebo(indices, sizeof(indices));
 
-    vao.linkVBO(vbo, 0);
+    vao.linkAttrib(vbo, 0, 3, GL_FLOAT, 6 * sizeof(float), (void *)0);
+    vao.linkAttrib(vbo, 1, 3, GL_FLOAT, 6 * sizeof(float),
+                   (void *)(3 * sizeof(float)));
     vao.unbind();
     vbo.unbind();
     ebo.unbind();
