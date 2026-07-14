@@ -56,6 +56,9 @@ int main() {
     vbo.unbind();
     ebo.unbind();
 
+    unsigned int uniId =
+        glGetUniformLocation(RenderLib::ShaderLoader::sProgram, "scale");
+
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
     ImGuiIO &io = ImGui::GetIO();
@@ -67,9 +70,16 @@ int main() {
     // set to wireframe mode
     // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
+    bool goingPositive = false;
+    float scale = 0;
+
     while (!glfwWindowShouldClose(window)) {
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
+
+        // use shader program
+        RenderLib::ShaderLoader::use();
+        glUniform1f(uniId, scale);
 
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
@@ -82,7 +92,19 @@ int main() {
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
-        RenderLib::ShaderLoader::use();
+        // increase scale
+        if (goingPositive) {
+            scale += 0.01f;
+
+            if (scale >= 1)
+                goingPositive = false;
+        } else {
+            scale -= 0.01f;
+
+            if (scale <= 0)
+                goingPositive = true;
+        }
+
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
