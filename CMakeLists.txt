@@ -1,6 +1,12 @@
 cmake_minimum_required(VERSION 3.23)
 project(FPSGame LANGUAGES CXX C)
 
+# need this for better distribution later on
+if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
+  set(CMAKE_BUILD_TYPE "RelWithDebInfo" CACHE STRING "Choose build type" FORCE)
+  set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS "Debug" "Release" "MinSizeRel" "RelWithDebInfo")
+endif()
+
 include(FetchContent)
 
 FetchContent_Declare(
@@ -21,10 +27,10 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 add_subdirectory(Core)
 add_subdirectory(WindowLib)
 add_subdirectory(RenderLib)
-#add_subdirectory(GameEngine)
+# add_subdirectory(GameEngine)
 
 add_executable(FPSGame
   src/main.cpp
 )
 
-target_link_libraries(FPSGame PUBLIC Core WindowLib RenderLib glfw)
+target_link_libraries(FPSGame PUBLIC Core WindowLib RenderLib)

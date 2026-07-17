@@ -6,7 +6,9 @@
 
 #include "GLFW/glfw3.h"
 #include "logger.h"
+#include "path_helper.h"
 #include "shaders/loader.h"
+#include "textures/texture.h"
 #include "window.h"
 #include <string>
 
@@ -22,6 +24,12 @@ static void glfwError(int id, const char *description) {
 }
 
 int main() {
+    // set the current directory!!!!
+    filesystem::path mainExecutableFile(__FILE__);
+    PathHelper::setCurrentDirectory(
+        mainExecutableFile.parent_path()); // set to the parent path; this is
+                                           // our game project root
+
     glfwSetErrorCallback(&glfwError);
 
     // init the windowlib to run glfwinit
@@ -32,16 +40,14 @@ int main() {
 
     // TODO: move all rendering logic to renderlib
 
-    // triangle vertices (first 3) and rgb color values for second set of 3
+    // square
     float vertices[] = {
-        -0.5f,     -0.5f * float(sqrt(3)) / 3,    0.0f, 0.8f, 0.3f,  0.02f,
-        0.5f,      -0.5f * float(sqrt(3)) / 3,    0.0f, 0.8f, 0.3f,  0.02f,
-        0.0f,      0.5f * float(sqrt(3)) * 2 / 3, 0.0f, 1.0f, 0.6f,  0.32f,
-        -0.5f / 2, 0.5f * float(sqrt(3)) / 6,     0.0f, 0.9f, 0.45f, 0.17f,
-        0.5f / 2,  0.5f * float(sqrt(3)) / 6,     0.0f, 0.9f, 0.45f, 0.17f,
-        0.0f,      -0.5f * float(sqrt(3)) / 3,    0.0f, 0.8f, 0.3f,  0.02f};
+        -0.5, -0.5, 0.0f, 1.0f,  0.0f, 0.0f, 0.0f, 0.0f, -0.5f, 0.5f, 0.0f,
+        0.0f, 1.0f, 0.0f, 0.0f,  1.0f, 0.5f, 0.5f, 0.0f, 0.0f,  0.0f, 1.0f,
+        1.0f, 1.0f, 0.5f, -0.5f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f,  0.0f,
+    };
 
-    unsigned int indices[] = {0, 3, 5, 3, 2, 4, 5, 4, 1};
+    unsigned int indices[] = {0, 2, 1, 0, 3, 2};
 
     VAO vao;
     vao.bind();
@@ -49,15 +55,32 @@ int main() {
     VBO vbo(vertices, sizeof(vertices));
     EBO ebo(indices, sizeof(indices));
 
-    vao.linkAttrib(vbo, 0, 3, GL_FLOAT, 6 * sizeof(float), (void *)0);
-    vao.linkAttrib(vbo, 1, 3, GL_FLOAT, 6 * sizeof(float),
+    vao.linkAttrib(vbo, 0, 3, GL_FLOAT, 8 * sizeof(float), (void *)0);
+    vao.linkAttrib(vbo, 1, 3, GL_FLOAT, 8 * sizeof(float),
                    (void *)(3 * sizeof(float)));
+    vao.linkAttrib(vbo, 2, 2, GL_FLOAT, 8 * sizeof(float),
+                   (void *)(6 * sizeof(float)));
     vao.unbind();
     vbo.unbind();
     ebo.unbind();
 
+    RenderLib::Texture *texture = new RenderLib::Texture(
+        PathHelper::getResourcePath({"assets", "textures", "Asphalt.jpg"}));
+
+    texture->bind();
+    texture->changeSetting(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    texture->changeSetting(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    texture->changeSetting(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    texture->changeSetting(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    texture->unbind();
+
     unsigned int uniId =
         glGetUniformLocation(RenderLib::ShaderLoader::sProgram, "scale");
+
+    unsigned int tex0Uni =
+        glGetUniformLocation(RenderLib::ShaderLoader::sProgram, "tex0");
+    RenderLib::ShaderLoader::use();
+    glUniform1i(tex0Uni, 0);
 
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
@@ -85,25 +108,13 @@ int main() {
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
         vao.bind();
+        texture->bind();
         glDrawElements(GL_TRIANGLES, 9, GL_UNSIGNED_INT, 0);
 
         ImGui::ShowDemoWindow();
 
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-
-        // increase scale
-        if (goingPositive) {
-            scale += 0.01f;
-
-            if (scale >= 1)
-                goingPositive = false;
-        } else {
-            scale -= 0.01f;
-
-            if (scale <= 0)
-                goingPositive = true;
-        }
 
         glfwSwapBuffers(window);
         glfwPollEvents();

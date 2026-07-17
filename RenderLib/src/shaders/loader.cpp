@@ -1,4 +1,6 @@
 // This file loads shaders by file and loads into a shader program
+// Note: the included shaders in this file are backups, in case the game shaders
+// can't load properly;
 
 #include "shaders/loader.h"
 #include "glad/gl.h"
@@ -28,10 +30,12 @@ void ShaderLoader::loadShaders() {
     filesystem::path shaderFileLoader(__FILE__);
     filesystem::path shaderDirectory = shaderFileLoader.parent_path();
 
+    Logger::getInstance()->info("Here's the path to the current file: " +
+                                shaderDirectory.string());
+
     // compile vertex shader
-    string vertexShaderSource = getShaderFromFile(
-        "/Users/rorozee1/Documents/Programming "
-        "Projects/C++/fps-game/RenderLib/src/shaders/vertex_shader.glsl");
+    string vertexShaderSource =
+        getShaderFromFile(shaderDirectory / "vertex_shader.glsl");
 
     auto vertexShaderID =
         compileShader(&vertexShaderSource, GL_VERTEX_SHADER, "VERTEX");
@@ -41,9 +45,8 @@ void ShaderLoader::loadShaders() {
         to_string(vertexShaderID));
 
     // compile fragment shader
-    string fragmentShaderSource = getShaderFromFile(
-        "/Users/rorozee1/Documents/Programming "
-        "Projects/C++/fps-game/RenderLib/src/shaders/fragment_shader.glsl");
+    string fragmentShaderSource =
+        getShaderFromFile(shaderDirectory / "fragment_shader.glsl");
 
     auto fragmentShaderID =
         compileShader(&fragmentShaderSource, GL_FRAGMENT_SHADER, "FRAGMENT");

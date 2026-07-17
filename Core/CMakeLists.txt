@@ -1,4 +1,7 @@
-add_library(Core STATIC src/logger.cpp)
+add_library(Core STATIC
+  src/logger.cpp
+  src/path_helper.cpp
+)
 
 target_include_directories(Core
   PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include
