@@ -111,11 +111,13 @@ int main() {
     // set to wireframe mode
     // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
+    double msFromPrevFrame = 0.0f;
     double fps = 0.0f;
     int framesPast = 0;
     float rotation = 0.0f;
     double prevRotationTime = glfwGetTime();
     double prevFPSTime = glfwGetTime();
+    double timeForPrevFrame = glfwGetTime();
     bool shouldSwapVsync = true;
 
     glEnable(GL_DEPTH_TEST);
@@ -138,6 +140,10 @@ int main() {
 
         // time related stuff
         double currTime = glfwGetTime();
+
+        // frame time
+        msFromPrevFrame = (currTime - timeForPrevFrame) * 1000;
+        timeForPrevFrame = currTime;
 
         // fps calculation
         framesPast++;
@@ -186,7 +192,10 @@ int main() {
         ImGui::Begin("Debugging");
 
         // gui - content
+        std::string frameTimeText =
+            "Frame: " + std::to_string(msFromPrevFrame) + "ms";
         std::string fpsText = "FPS: " + std::to_string(fps);
+        ImGui::Text(frameTimeText.c_str());
         ImGui::Text(fpsText.c_str());
         if (ImGui::Checkbox("Enable VSync", &shouldSwapVsync)) {
             swapVsync(shouldSwapVsync);
