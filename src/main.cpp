@@ -30,6 +30,11 @@ static void glfwError(int id, const char *description) {
     Logger::getInstance()->err(description);
 }
 
+static void swapVsync(bool enable) {
+    Logger::getInstance()->info("Turning vsync to: " + std::to_string(enable));
+    glfwSwapInterval(enable);
+}
+
 static const int width = 1000;
 static const int height = 1000;
 
@@ -106,10 +111,18 @@ int main() {
     // set to wireframe mode
     // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
+    double fps = 0.0f;
+    int framesPast = 0;
     float rotation = 0.0f;
-    double prev = glfwGetTime();
+    double prevRotationTime = glfwGetTime();
+    double prevFPSTime = glfwGetTime();
+    bool shouldSwapVsync = true;
 
     glEnable(GL_DEPTH_TEST);
+
+    std::string renderer(
+        reinterpret_cast<const char *>(glGetString(GL_RENDERER)));
+    Logger::getInstance()->info("OpenGL renderer: " + renderer);
 
     while (!glfwWindowShouldClose(window)) {
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
@@ -123,10 +136,21 @@ int main() {
         glm::mat4 view = glm::mat4(1.0f);
         glm::mat4 proj = glm::mat4(1.0f);
 
+        // time related stuff
         double currTime = glfwGetTime();
-        if (currTime - prev >= 1 / 60) {
+
+        // fps calculation
+        framesPast++;
+        if (currTime - prevFPSTime >= 1.0) {
+            fps = double(framesPast) / (currTime - prevFPSTime);
+            framesPast = 0;
+            prevFPSTime = currTime;
+        }
+
+        // rotation
+        if (currTime - prevRotationTime >= 1.0 / 60.0) {
             rotation += 0.5f;
-            prev = currTime;
+            prevRotationTime = currTime;
         }
 
         model = glm::rotate(model, glm::radians(rotation),
@@ -150,16 +174,30 @@ int main() {
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
+
+        // draw actual images
         vao.bind();
         texture->bind();
         glDrawElements(GL_TRIANGLES, sizeof(indices) / sizeof(int),
                        GL_UNSIGNED_INT, 0);
 
-        ImGui::ShowDemoWindow();
+        // gui - title
+        ImGui::SetNextWindowSize(ImVec2(500, 200), ImGuiCond_FirstUseEver);
+        ImGui::Begin("Debugging");
+
+        // gui - content
+        std::string fpsText = "FPS: " + std::to_string(fps);
+        ImGui::Text(fpsText.c_str());
+        if (ImGui::Checkbox("Enable VSync", &shouldSwapVsync)) {
+            swapVsync(shouldSwapVsync);
+        }
+
+        ImGui::End();
 
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
+        // glfwSwapInterval(0);
         glfwSwapBuffers(window);
         glfwPollEvents();
     }

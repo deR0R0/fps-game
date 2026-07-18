@@ -34,7 +34,8 @@ char *Logger::getDateTime() {
 void Logger::log(string type, string message) {
     std::lock_guard<std::mutex> lock(
         logger_mutex); // lock thread for later in case i want to write to file
-    cout << "[" << type << "] " << getDateTime() << "\t\t" << message << endl;
+    cout << "[" << type << "] " << getDateTime() << "\t\t" << message
+         << "\n"; // apparently endl is bad for performance, so it's \n now
 }
 
 void Logger::info(string message) { Logger::log("INFO", message); }
