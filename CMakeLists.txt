@@ -20,6 +20,15 @@ set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
 set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
 
 FetchContent_MakeAvailable(glfw)
+
+FetchContent_Declare(
+  glm
+  GIT_REPOSITORY https://github.com/g-truc/glm.git
+  GIT_TAG 1.0.3
+)
+
+FetchContent_MakeAvailable(glm)
+
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
@@ -33,4 +42,4 @@ add_executable(FPSGame
   src/main.cpp
 )
 
-target_link_libraries(FPSGame PUBLIC Core WindowLib RenderLib)
+target_link_libraries(FPSGame PUBLIC Core WindowLib RenderLib glm::glm) # glm is included throughout the entire project

@@ -30,9 +30,6 @@ void ShaderLoader::loadShaders() {
     filesystem::path shaderFileLoader(__FILE__);
     filesystem::path shaderDirectory = shaderFileLoader.parent_path();
 
-    Logger::getInstance()->info("Here's the path to the current file: " +
-                                shaderDirectory.string());
-
     // compile vertex shader
     string vertexShaderSource =
         getShaderFromFile(shaderDirectory / "vertex_shader.glsl");
