@@ -4,7 +4,7 @@
 namespace RenderLib {
 class Texture {
 public:
-    Texture(std::filesystem::path texturePath);
+    Texture(std::filesystem::path texturePath, GLenum slot);
     ~Texture();
 
     // image stuff
@@ -27,5 +27,6 @@ private:
     unsigned char *bytes;
 
     unsigned int ID;
+    GLenum textureSlot;
 };
 } // namespace RenderLib

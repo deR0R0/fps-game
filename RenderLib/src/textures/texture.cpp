@@ -6,7 +6,10 @@
 using namespace RenderLib;
 
 // assume 2d textures for now.
-Texture::Texture(std::filesystem::path texturePath) {
+Texture::Texture(std::filesystem::path texturePath, GLenum slot) {
+    // current texture "slot"
+    textureSlot = slot;
+
     // load the texture into ram
     stbi_set_flip_vertically_on_load(true);
     bytes =
@@ -25,6 +28,7 @@ Texture::Texture(std::filesystem::path texturePath) {
     // upload to the gpu. we keep the texture bytes on the cpu side
     // for now.
     // TODO: remove texture from cpu after gpu upload
+    // TODO: need to dyhamicaly make diff textures (2d, 3d)
 
     // determine whetehr to use rgb or rgba depending on jpg or png
     GLenum rgbType = (colorChannelCount == 4) ? GL_RGBA : GL_RGB;
@@ -42,18 +46,13 @@ Texture::~Texture() {
 }
 
 void Texture::changeSetting(GLenum dimension, GLenum setting, GLenum value) {
-    glActiveTexture(GL_TEXTURE0);
     glTexParameteri(dimension, setting, value);
 }
 
-void Texture::bind() {
-    glActiveTexture(
-        GL_TEXTURE0); // temp position for now; will dynamically gen in a little
-    glBindTexture(GL_TEXTURE_2D, ID);
-}
+void Texture::bind() { glBindTexture(GL_TEXTURE_2D, ID); }
 
 void Texture::unbind() {
-    glActiveTexture(GL_TEXTURE0);
+    glActiveTexture(textureSlot);
     glBindTexture(GL_TEXTURE_2D, 0);
 }
 

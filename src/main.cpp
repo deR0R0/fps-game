@@ -65,7 +65,8 @@ int main() {
     ebo.unbind();
 
     RenderLib::Texture *texture = new RenderLib::Texture(
-        PathHelper::getResourcePath({"assets", "textures", "Asphalt.jpg"}));
+        PathHelper::getResourcePath({"assets", "textures", "Asphalt.jpg"}),
+        GL_TEXTURE0);
 
     texture->bind();
     texture->changeSetting(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
