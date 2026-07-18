@@ -5,7 +5,6 @@
 
 #include <GLFW/glfw3.h>
 
-using namespace std;
 void WindowLib::Window::init() {
     if (!glfwInit()) {
         Core::Logger::getInstance()->err("ERROR: Couldn't init GLFW.");
@@ -17,8 +16,10 @@ void WindowLib::Window::init() {
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 }
 
-GLFWwindow *WindowLib::Window::createWindow() {
-    GLFWwindow *window = glfwCreateWindow(1000, 1000, "FPSGame", NULL, NULL);
+GLFWwindow *WindowLib::Window::createWindow(int width, int height,
+                                            std::string windowName) {
+    GLFWwindow *window =
+        glfwCreateWindow(width, height, windowName.c_str(), NULL, NULL);
     if (!window) {
         Core::Logger::getInstance()->err("ERROR: Couldn't create window.");
         exit(1);

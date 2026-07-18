@@ -36,20 +36,26 @@ Texture::Texture(std::filesystem::path texturePath, GLenum slot) {
     glTexImage2D(GL_TEXTURE_2D, 0, rgbType, width, height, 0, rgbType,
                  GL_UNSIGNED_BYTE, bytes);
     glGenerateMipmap(GL_TEXTURE_2D);
+
+    stbi_image_free(bytes);
 }
 
 Texture::~Texture() {
     // free our bytes using stbi and then unbind + delete the texture
-    stbi_image_free(bytes);
+    // stbi_image_free(bytes);
     unbind();
     deleteTexture();
 }
 
 void Texture::changeSetting(GLenum dimension, GLenum setting, GLenum value) {
+    glActiveTexture(textureSlot);
     glTexParameteri(dimension, setting, value);
 }
 
-void Texture::bind() { glBindTexture(GL_TEXTURE_2D, ID); }
+void Texture::bind() {
+    glActiveTexture(textureSlot);
+    glBindTexture(GL_TEXTURE_2D, ID);
+}
 
 void Texture::unbind() {
     glActiveTexture(textureSlot);

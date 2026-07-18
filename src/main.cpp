@@ -1,3 +1,10 @@
+#include <glm/common.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+#include <glm/mat4x4.hpp>
+
+#include "glm/ext/matrix_transform.hpp"
+#include "glm/ext/vector_float3.hpp"
 #include "imgui.h"
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
@@ -23,6 +30,9 @@ static void glfwError(int id, const char *description) {
     Logger::getInstance()->err(description);
 }
 
+static const int width = 1000;
+static const int height = 1000;
+
 int main() {
     // set the current directory!!!!
     filesystem::path mainExecutableFile(__FILE__);
@@ -34,20 +44,22 @@ int main() {
 
     // init the windowlib to run glfwinit
     WindowLib::Window::init();
-    GLFWwindow *window = WindowLib::Window::createWindow();
+    GLFWwindow *window =
+        WindowLib::Window::createWindow(width, height, "FPSGame");
 
     RenderLib::ShaderLoader::loadShaders();
 
     // TODO: move all rendering logic to renderlib
 
-    // square
-    float vertices[] = {
-        -0.5, -0.5, 0.0f, 1.0f,  0.0f, 0.0f, 0.0f, 0.0f, -0.5f, 0.5f, 0.0f,
-        0.0f, 1.0f, 0.0f, 0.0f,  1.0f, 0.5f, 0.5f, 0.0f, 0.0f,  0.0f, 1.0f,
-        1.0f, 1.0f, 0.5f, -0.5f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f,  0.0f,
-    };
+    // pyramid yes
+    float vertices[] = {-0.5f, 0.0f, 0.5f,  0.83f, 0.70f, 0.44f, 0.0f, 0.0f,
+                        -0.5f, 0.0f, -0.5f, 0.83f, 0.7f,  0.44f, 5.0f, 0.0f,
+                        0.5f,  0.0f, -0.5f, 0.83,  0.70f, 0.44f, 0.0f, 0.0f,
+                        0.5f,  0.0f, 0.5f,  0.83f, 0.70f, 0.44f, 5.0,  0.0f,
+                        0.0f,  0.8f, 0.0f,  0.92f, 0.86f, 0.76f, 2.5f, 5.0f};
 
-    unsigned int indices[] = {0, 2, 1, 0, 3, 2};
+    unsigned int indices[] = {0, 1, 2, 0, 2, 3, 0, 1, 4,
+                              1, 2, 4, 2, 3, 4, 3, 0, 4};
 
     VAO vao;
     vao.bind();
@@ -94,23 +106,54 @@ int main() {
     // set to wireframe mode
     // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
-    bool goingPositive = false;
-    float scale = 0;
+    float rotation = 0.0f;
+    double prev = glfwGetTime();
+
+    glEnable(GL_DEPTH_TEST);
 
     while (!glfwWindowShouldClose(window)) {
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         // use shader program
         RenderLib::ShaderLoader::use();
-        glUniform1f(uniId, scale);
+
+        // 3d?
+        glm::mat4 model = glm::mat4(1.0f);
+        glm::mat4 view = glm::mat4(1.0f);
+        glm::mat4 proj = glm::mat4(1.0f);
+
+        double currTime = glfwGetTime();
+        if (currTime - prev >= 1 / 60) {
+            rotation += 0.5f;
+            prev = currTime;
+        }
+
+        model = glm::rotate(model, glm::radians(rotation),
+                            glm::vec3(0.0f, 1.0f, 0.0f));
+        view = glm::translate(view, glm::vec3(0.0f, -0.5f, -2.0f));
+        proj = glm::perspective(glm::radians(45.0f), (float)(width / height),
+                                0.1f, 100.0f);
+
+        int modelLoc =
+            glGetUniformLocation(RenderLib::ShaderLoader::sProgram, "model");
+        glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+
+        int viewLoc =
+            glGetUniformLocation(RenderLib::ShaderLoader::sProgram, "view");
+        glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
+
+        int projLoc =
+            glGetUniformLocation(RenderLib::ShaderLoader::sProgram, "proj");
+        glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(proj));
 
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
         vao.bind();
         texture->bind();
-        glDrawElements(GL_TRIANGLES, 9, GL_UNSIGNED_INT, 0);
+        glDrawElements(GL_TRIANGLES, sizeof(indices) / sizeof(int),
+                       GL_UNSIGNED_INT, 0);
 
         ImGui::ShowDemoWindow();
 
