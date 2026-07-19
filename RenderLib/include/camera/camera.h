@@ -31,9 +31,13 @@ public:
     float sensitivity = 100.0f;
 
     Camera(int width, int height, glm::vec3 position);
+    ~Camera();
 
     void matrix(float FOVdeg, float nearPlane, float farPlane,
                 unsigned int shaderID, const char *uniform);
     void inputs(GLFWwindow *window);
+
+private:
+    GLFWcursor *invisibleCursor;
 };
 } // namespace RenderLib

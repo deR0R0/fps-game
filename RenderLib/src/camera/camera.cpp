@@ -9,6 +9,19 @@ Camera::Camera(int width, int height, glm::vec3 position) {
     this->width = width;
     this->height = height;
     this->position = position;
+
+    // make macos cursor
+    unsigned char pixels[4] = {0, 0, 0, 0};
+    GLFWimage image;
+    image.width = 1;
+    image.height = 1;
+    image.pixels = pixels;
+    invisibleCursor = glfwCreateCursor(&image, 0, 0);
+}
+
+Camera::~Camera() {
+    glfwDestroyCursor(invisibleCursor);
+    invisibleCursor = NULL;
 }
 
 void Camera::matrix(float FOVdeg, float nearPlane, float farPlane,
@@ -60,14 +73,6 @@ void Camera::inputs(GLFWwindow *window) {
         glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
 
         // hide mouse for macos
-        unsigned char pixels[4] = {0, 0, 0, 0};
-        GLFWimage image;
-        image.width = 1;
-        image.height = 1;
-        image.pixels = pixels;
-
-        GLFWcursor *invisibleCursor = glfwCreateCursor(&image, 0, 0);
-
         glfwSetCursor(window, invisibleCursor);
 
         // looking logic
