@@ -20,8 +20,10 @@ Camera::Camera(int width, int height, glm::vec3 position) {
 }
 
 Camera::~Camera() {
-    glfwDestroyCursor(invisibleCursor);
-    invisibleCursor = NULL;
+    if (invisibleCursor != NULL) {
+        glfwDestroyCursor(invisibleCursor);
+        invisibleCursor = NULL;
+    }
 }
 
 void Camera::matrix(float FOVdeg, float nearPlane, float farPlane,

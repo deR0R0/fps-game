@@ -24,7 +24,8 @@ public:
 
     bool firstClick = false;
 
-    int width;
+    int width; // TODO: encapsulate this and make getter/setter methods for when
+               // the window resizes
     int height;
 
     float speed = 0.1f;
