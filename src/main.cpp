@@ -3,13 +3,13 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/mat4x4.hpp>
 
-#include "glm/ext/matrix_transform.hpp"
+#include <glad/gl.h>
+
+#include "camera/camera.h"
 #include "glm/ext/vector_float3.hpp"
 #include "imgui.h"
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
-
-#include <glad/gl.h>
 
 #include "GLFW/glfw3.h"
 #include "logger.h"
@@ -85,16 +85,6 @@ int main() {
         PathHelper::getResourcePath({"assets", "textures", "Asphalt.jpg"}),
         GL_TEXTURE0);
 
-    texture->bind();
-    texture->changeSetting(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    texture->changeSetting(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    texture->changeSetting(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    texture->changeSetting(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    texture->unbind();
-
-    unsigned int uniId =
-        glGetUniformLocation(RenderLib::ShaderLoader::sProgram, "scale");
-
     unsigned int tex0Uni =
         glGetUniformLocation(RenderLib::ShaderLoader::sProgram, "tex0");
     RenderLib::ShaderLoader::use();
@@ -114,13 +104,14 @@ int main() {
     double msFromPrevFrame = 0.0f;
     double fps = 0.0f;
     int framesPast = 0;
-    float rotation = 0.0f;
-    double prevRotationTime = glfwGetTime();
     double prevFPSTime = glfwGetTime();
     double timeForPrevFrame = glfwGetTime();
     bool shouldSwapVsync = true;
 
     glEnable(GL_DEPTH_TEST);
+
+    // camera :O
+    RenderLib::Camera camera(width, height, glm::vec3(0.0f, 0.0f, 2.0f));
 
     std::string renderer(
         reinterpret_cast<const char *>(glGetString(GL_RENDERER)));
@@ -133,10 +124,10 @@ int main() {
         // use shader program
         RenderLib::ShaderLoader::use();
 
-        // 3d?
-        glm::mat4 model = glm::mat4(1.0f);
-        glm::mat4 view = glm::mat4(1.0f);
-        glm::mat4 proj = glm::mat4(1.0f);
+        // cam matrix
+        camera.inputs(window);
+        camera.matrix(45.0f, 0.1f, 100.0f, RenderLib::ShaderLoader::sProgram,
+                      "camMatrix");
 
         // time related stuff
         double currTime = glfwGetTime();
@@ -152,30 +143,6 @@ int main() {
             framesPast = 0;
             prevFPSTime = currTime;
         }
-
-        // rotation
-        if (currTime - prevRotationTime >= 1.0 / 60.0) {
-            rotation += 0.5f;
-            prevRotationTime = currTime;
-        }
-
-        model = glm::rotate(model, glm::radians(rotation),
-                            glm::vec3(0.0f, 1.0f, 0.0f));
-        view = glm::translate(view, glm::vec3(0.0f, -0.5f, -2.0f));
-        proj = glm::perspective(glm::radians(45.0f), (float)(width / height),
-                                0.1f, 100.0f);
-
-        int modelLoc =
-            glGetUniformLocation(RenderLib::ShaderLoader::sProgram, "model");
-        glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
-
-        int viewLoc =
-            glGetUniformLocation(RenderLib::ShaderLoader::sProgram, "view");
-        glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
-
-        int projLoc =
-            glGetUniformLocation(RenderLib::ShaderLoader::sProgram, "proj");
-        glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(proj));
 
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
@@ -195,8 +162,8 @@ int main() {
         std::string frameTimeText =
             "Frame: " + std::to_string(msFromPrevFrame) + "ms";
         std::string fpsText = "FPS: " + std::to_string(fps);
-        ImGui::Text(frameTimeText.c_str());
-        ImGui::Text(fpsText.c_str());
+        ImGui::TextUnformatted(frameTimeText.c_str());
+        ImGui::TextUnformatted(fpsText.c_str());
         if (ImGui::Checkbox("Enable VSync", &shouldSwapVsync)) {
             swapVsync(shouldSwapVsync);
         }

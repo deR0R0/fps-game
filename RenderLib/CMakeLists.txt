@@ -16,9 +16,10 @@ add_library(RenderLib STATIC
   src/mesh/ebo.cpp
   src/mesh/vao.cpp
   src/textures/texture.cpp
+  src/camera/camera.cpp
 )
 
-target_link_libraries(RenderLib PUBLIC Core WindowLib)
+target_link_libraries(RenderLib PUBLIC Core WindowLib glm::glm)
 
 target_include_directories(RenderLib
   PUBLIC

@@ -25,6 +25,12 @@ Texture::Texture(std::filesystem::path texturePath, GLenum slot) {
     glGenTextures(1, &ID);
     bind();
 
+    // include some default settings
+    changeSetting(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    changeSetting(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    changeSetting(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    changeSetting(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
     // upload to the gpu. we keep the texture bytes on the cpu side
     // for now.
     // TODO: remove texture from cpu after gpu upload
