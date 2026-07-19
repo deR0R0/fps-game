@@ -56,8 +56,21 @@ void Camera::inputs(GLFWwindow *window) {
 
     // mouse controls
     if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS) {
+        // hide mouse (works for windows probs)
         glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
 
+        // hide mouse for macos
+        unsigned char pixels[4] = {0, 0, 0, 0};
+        GLFWimage image;
+        image.width = 1;
+        image.height = 1;
+        image.pixels = pixels;
+
+        GLFWcursor *invisibleCursor = glfwCreateCursor(&image, 0, 0);
+
+        glfwSetCursor(window, invisibleCursor);
+
+        // looking logic
         if (firstClick) {
             firstClick = false;
             glfwSetCursorPos(window, (width / 2.0), (height / 2.0));
@@ -85,6 +98,7 @@ void Camera::inputs(GLFWwindow *window) {
 
     if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_RELEASE) {
         glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+        glfwSetCursor(window, NULL);
         firstClick = true;
     }
 }
