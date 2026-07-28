@@ -70,7 +70,7 @@ void Camera::inputs(GLFWwindow *window) {
     }
 
     // mouse controls
-    if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS) {
+    if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS) {
         // hide mouse (works for windows probs)
         glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
 
@@ -103,7 +103,7 @@ void Camera::inputs(GLFWwindow *window) {
         glfwSetCursorPos(window, (width / 2.0), (height / 2.0));
     }
 
-    if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_RELEASE) {
+    if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_RELEASE) {
         glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
         glfwSetCursor(window, NULL);
         firstClick = true;

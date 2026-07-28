@@ -35,8 +35,8 @@ static void swapVsync(bool enable) {
     glfwSwapInterval(enable);
 }
 
-static const int width = 1000;
-static const int height = 1000;
+static const int width = 1500;
+static const int height = 1500;
 
 int main() {
     // set the current directory!!!!
@@ -155,7 +155,7 @@ int main() {
                        GL_UNSIGNED_INT, 0);
 
         // gui - title
-        ImGui::SetNextWindowSize(ImVec2(500, 200), ImGuiCond_FirstUseEver);
+        ImGui::SetNextWindowSize(ImVec2(200, 100), ImGuiCond_FirstUseEver);
         ImGui::Begin("Debugging");
 
         // gui - content
