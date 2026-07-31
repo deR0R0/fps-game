@@ -16,11 +16,9 @@
 namespace RenderLib {
 class Camera {
 public:
-    // victor gordan's tutorial used orientation and up
-    // but i think pitch and yaw is correct here.
     glm::vec3 position;
-    glm::vec3 yaw = glm::vec3(0.0f, 0.0f, -1.0f);
-    glm::vec3 pitch = glm::vec3(0.0f, 1.0f, 0.0f);
+    glm::vec3 orientation = glm::vec3(0.0f, 0.0f, -1.0f);
+    glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f);
 
     bool firstClick = false;
 
