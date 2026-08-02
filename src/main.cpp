@@ -126,8 +126,8 @@ int main() {
 
         // cam matrix
         camera.inputs(window);
-        camera.matrix(45.0f, 0.1f, 100.0f, RenderLib::ShaderLoader::sProgram,
-                      "camMatrix");
+        camera.updateMatrix(45.0f, 0.1f, 100.0f);
+        camera.matrix(RenderLib::ShaderLoader::sProgram, "camMatrix");
 
         // time related stuff
         double currTime = glfwGetTime();
