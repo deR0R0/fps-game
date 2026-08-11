@@ -34,12 +34,12 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 add_subdirectory(Core)
-add_subdirectory(WindowLib)
-add_subdirectory(RenderLib)
+add_subdirectory(Window)
+add_subdirectory(Render)
 # add_subdirectory(GameEngine)
 
 add_executable(FPSGame
   Game/main.cpp
 )
 
-target_link_libraries(FPSGame PUBLIC Core WindowLib RenderLib glm::glm) # glm is included throughout the entire project
+target_link_libraries(FPSGame PUBLIC Core Window Render glm::glm) # glm is included throughout the entire project

@@ -1,4 +1,4 @@
-add_library(RenderLib STATIC
+add_library(Render STATIC
   vendor/glad/src/gl.c
 
   vendor/imgui/src/imgui.cpp
@@ -19,9 +19,9 @@ add_library(RenderLib STATIC
   src/camera/camera.cpp
 )
 
-target_link_libraries(RenderLib PUBLIC Core WindowLib glm::glm)
+target_link_libraries(Render PUBLIC Core Window glm::glm)
 
-target_include_directories(RenderLib
+target_include_directories(Render
   PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/vendor/glad/include
     ${CMAKE_CURRENT_SOURCE_DIR}/vendor/imgui/include
@@ -34,4 +34,4 @@ target_include_directories(RenderLib
     ${CMAKE_CURRENT_SOURCE_DIR}/src
 )
 
-target_compile_options(RenderLib PRIVATE -Wall -Wextra -Wpedantic -Werror)
+target_compile_options(Render PRIVATE -Wall -Wextra -Wpedantic -Werror)

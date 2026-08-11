@@ -24,6 +24,8 @@
 #include <mesh/vao.h>
 #include <mesh/vbo.h>
 
+// TODO: make cmake package all game assets so i can actually load the dang game
+
 using namespace Core;
 using namespace RenderLib;
 

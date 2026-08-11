@@ -2,7 +2,7 @@ add_library(GameEngine STATIC
   vendor/stb/src/stb_image.cpp
 )
 
-target_link_libraries(GameEngine PUBLIC Core WindowLib RenderLib)
+target_link_libraries(GameEngine PUBLIC Core Window Render)
 
 target_include_directories(GameEngine
   PUBLIC
