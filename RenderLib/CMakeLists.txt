@@ -11,7 +11,7 @@ add_library(RenderLib STATIC
 
   vendor/stb/src/stb_image.cpp
 
-  src/shaders/loader.cpp
+  src/shaders/shader.cpp
   src/mesh/vbo.cpp
   src/mesh/ebo.cpp
   src/mesh/vao.cpp

@@ -39,7 +39,7 @@ add_subdirectory(RenderLib)
 # add_subdirectory(GameEngine)
 
 add_executable(FPSGame
-  src/main.cpp
+  Game/main.cpp
 )
 
 target_link_libraries(FPSGame PUBLIC Core WindowLib RenderLib glm::glm) # glm is included throughout the entire project

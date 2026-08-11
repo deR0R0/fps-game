@@ -1,10 +1,13 @@
 #pragma once
 
+#include "whereami.h"
 #include <filesystem>
 #include <string>
+
 namespace Core {
 class PathHelper {
 public:
+    static void autoSetCurrentDirectory();
     static void setCurrentDirectory(std::filesystem::path dir);
     static std::filesystem::path getCurrentDirectory();
 
@@ -14,5 +17,7 @@ public:
 
 private:
     static std::filesystem::path currentDirectory;
+
+    static std::string getExecutablePath();
 };
 } // namespace Core

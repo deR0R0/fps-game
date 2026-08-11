@@ -1,3 +1,4 @@
+#include <filesystem>
 #include <glm/common.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -14,7 +15,7 @@
 #include "GLFW/glfw3.h"
 #include "logger.h"
 #include "path_helper.h"
-#include "shaders/loader.h"
+#include "shaders/shader.h"
 #include "textures/texture.h"
 #include "window.h"
 #include <string>
@@ -24,6 +25,7 @@
 #include <mesh/vbo.h>
 
 using namespace Core;
+using namespace RenderLib;
 
 static void glfwError(int id, const char *description) {
     Logger::getInstance()->err("Oops! There seems to be an error with glfw:");
@@ -40,10 +42,11 @@ static const int height = 1500;
 
 int main() {
     // set the current directory!!!!
-    filesystem::path mainExecutableFile(__FILE__);
-    PathHelper::setCurrentDirectory(
-        mainExecutableFile.parent_path()); // set to the parent path; this is
-                                           // our game project root
+    PathHelper::autoSetCurrentDirectory();
+
+    Logger::getInstance()->info(PathHelper::getCurrentDirectory());
+
+    return 0;
 
     glfwSetErrorCallback(&glfwError);
 
@@ -52,7 +55,8 @@ int main() {
     GLFWwindow *window =
         WindowLib::Window::createWindow(width, height, "FPSGame");
 
-    RenderLib::ShaderLoader::loadShaders();
+    // init shaders and load them
+    Shader::init();
 
     // TODO: move all rendering logic to renderlib
 
