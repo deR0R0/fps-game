@@ -46,6 +46,11 @@ int main() {
     // set the current directory!!!!
     PathHelper::autoSetCurrentDirectory();
 
+    if (PathHelper::getCurrentDirectory() == "") {
+        Logger::getInstance()->err("FATAL: path helper's directory is empty.");
+        return 1;
+    }
+
     Logger::getInstance()->info(PathHelper::getCurrentDirectory());
 
     return 0;
