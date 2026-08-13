@@ -53,8 +53,6 @@ int main() {
 
     Logger::getInstance()->info(PathHelper::getCurrentDirectory());
 
-    return 0;
-
     glfwSetErrorCallback(&glfwError);
 
     // init the windowlib to run glfwinit
@@ -63,7 +61,9 @@ int main() {
         WindowLib::Window::createWindow(width, height, "FPSGame");
 
     // init shaders and load them
-    Shader::init();
+    RenderLib::Shader::init();
+
+    Shader defaultShader("default");
 
     // TODO: move all rendering logic to renderlib
 
@@ -96,9 +96,8 @@ int main() {
         PathHelper::getResourcePath({"assets", "textures", "Asphalt.jpg"}),
         GL_TEXTURE0);
 
-    unsigned int tex0Uni =
-        glGetUniformLocation(RenderLib::ShaderLoader::sProgram, "tex0");
-    RenderLib::ShaderLoader::use();
+    unsigned int tex0Uni = glGetUniformLocation(defaultShader.getID(), "tex0");
+    defaultShader.use();
     glUniform1i(tex0Uni, 0);
 
     IMGUI_CHECKVERSION();
@@ -133,12 +132,12 @@ int main() {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         // use shader program
-        RenderLib::ShaderLoader::use();
+        defaultShader.use();
 
         // cam matrix
         camera.inputs(window);
         camera.updateMatrix(45.0f, 0.1f, 100.0f);
-        camera.matrix(RenderLib::ShaderLoader::sProgram, "camMatrix");
+        camera.matrix(defaultShader.getID(), "camMatrix");
 
         // time related stuff
         double currTime = glfwGetTime();
@@ -194,7 +193,7 @@ int main() {
     ImGui::DestroyContext();
 
     // cleanup
-    RenderLib::ShaderLoader::deleteProgram();
+    defaultShader.destroy();
     vao.deleteVAO();
     vbo.deleteVBO();
     ebo.deleteEBO();

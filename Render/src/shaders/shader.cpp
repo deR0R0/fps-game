@@ -17,17 +17,20 @@ using namespace Core;
 using namespace RenderLib;
 
 void Shader::init() {
+    Logger::getInstance()->info("Initing shader class");
     gladLoadGL(glfwGetProcAddress);
+    shaderDirectory = PathHelper::getCurrentDirectory();
+    shaderDirectory = shaderDirectory / "assets" / "shaders";
+    Logger::getInstance()->info("The shader asset directory is here: " +
+                                shaderDirectory.string());
 } // stupid, yes. works? yes
 
 Shader::Shader(const std::string &shaderName) {
-    gladLoadGL(glfwGetProcAddress);
     Logger::getInstance()->info("Attempting to discover shaders \"" +
                                 shaderName + "\"");
 
     std::string vertexShaderSource, fragShaderSource;
     unsigned int vertexShaderID, fragShaderID, programID;
-    std::filesystem::path shaderDirectory = PathHelper::getCurrentDirectory();
 
     // get the source files
     vertexShaderSource =
@@ -40,6 +43,9 @@ Shader::Shader(const std::string &shaderName) {
             "Stopped creation of shader program because a vertex or fragment "
             "shader is missing for " +
             shaderName);
+        Logger::getInstance()->warn(
+            "Following previous warning, looking in directory for shaders: " +
+            shaderDirectory.string());
         return;
     }
 
@@ -96,6 +102,8 @@ void Shader::destroy() {
         this->ID = 0;
     }
 }
+
+unsigned int Shader::getID() { return this->ID; }
 
 // discovers every .glsl file in this file directory and loads them to a shader
 // program

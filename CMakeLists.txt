@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.23)
+cmake_minimum_required(VERSION 3.28)
 project(FPSGame LANGUAGES CXX C)
 
 # need this for better distribution later on
@@ -41,5 +41,25 @@ add_subdirectory(Render)
 add_executable(FPSGame
   Game/main.cpp
 )
+
+# stamp
+set(ASSET_STAMP "${CMAKE_CURRENT_BINARY_DIR}/assets.stamp")
+
+# require asset reload when rebuild
+file(GLOB_RECURSE ASSET_FILES CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/Game/assets/*")
+
+add_custom_command(
+  OUTPUT "${ASSET_STAMP}"
+  COMMAND ${CMAKE_COMMAND} -E copy_directory_if_different
+    "${CMAKE_CURRENT_SOURCE_DIR}/Game/assets"
+    "$<TARGET_FILE_DIR:FPSGame>/assets"
+  COMMAND ${CMAKE_COMMAND} -E touch "${CMAKE_CURRENT_BINARY_DIR}/assets_$<CONFIG>.stamp"
+  DEPENDS ${ASSET_FILES}
+  COMMENT "Copying assets to the build directory..."
+  VERBATIM
+)
+
+add_custom_target(copy_assets DEPENDS "${ASSET_STAMP}")
+add_dependencies(FPSGame copy_assets)
 
 target_link_libraries(FPSGame PUBLIC Core Window Render glm::glm) # glm is included throughout the entire project

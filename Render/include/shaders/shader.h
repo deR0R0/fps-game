@@ -19,8 +19,10 @@ public:
 
     void use();
     void destroy();
+    unsigned int getID();
 
 private:
+    inline static std::filesystem::path shaderDirectory;
     unsigned int ID = 0;
 
     static std::string getShaderFromFile(std::filesystem::path shaderFilePath);
