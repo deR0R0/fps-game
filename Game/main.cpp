@@ -7,6 +7,7 @@
 #include <glad/gl.h>
 
 #include "camera/camera.h"
+#include "glm/ext/matrix_transform.hpp"
 #include "glm/ext/vector_float3.hpp"
 #include "imgui.h"
 #include "imgui_impl_glfw.h"
@@ -28,6 +29,24 @@
 
 using namespace Core;
 using namespace RenderLib;
+
+// pyramid yes
+float vertices[] = {-0.5f, 0.0f, 0.5f,  0.83f, 0.70f, 0.44f, 0.0f, 0.0f,
+                    -0.5f, 0.0f, -0.5f, 0.83f, 0.7f,  0.44f, 5.0f, 0.0f,
+                    0.5f,  0.0f, -0.5f, 0.83,  0.70f, 0.44f, 0.0f, 0.0f,
+                    0.5f,  0.0f, 0.5f,  0.83f, 0.70f, 0.44f, 5.0,  0.0f,
+                    0.0f,  0.8f, 0.0f,  0.92f, 0.86f, 0.76f, 2.5f, 5.0f};
+
+unsigned int indices[] = {0, 1, 2, 0, 2, 3, 0, 1, 4, 1, 2, 4, 2, 3, 4, 3, 0, 4};
+
+// light cube
+GLfloat lightVertices[] = {-0.1f, -0.1f, 0.1f,  -0.1f, -0.1f, -0.1f,
+                           0.1f,  -0.1f, -0.1f, 0.1f,  -0.1f, 0.1f,
+                           -0.1f, 0.1f,  0.1f,  -0.1f, 0.1f,  -0.1f,
+                           0.1f,  0.1f,  -0.1f, 0.1f,  0.1f,  0.1f};
+
+GLuint lightIndices[] = {0, 1, 2, 0, 2, 3, 0, 4, 7, 0, 7, 3, 3, 7, 6, 3, 6, 2,
+                         2, 6, 5, 2, 5, 1, 1, 5, 4, 1, 4, 0, 4, 5, 6, 4, 6, 7};
 
 static void glfwError(int id, const char *description) {
     Logger::getInstance()->err("Oops! There seems to be an error with glfw:");
@@ -51,7 +70,8 @@ int main() {
         return 1;
     }
 
-    Logger::getInstance()->info(PathHelper::getCurrentDirectory());
+    Logger::getInstance()->info("Current Directory: " +
+                                PathHelper::getCurrentDirectory().string());
 
     glfwSetErrorCallback(&glfwError);
 
@@ -63,20 +83,15 @@ int main() {
     // init shaders and load them
     RenderLib::Shader::init();
 
+    std::string renderer(
+        reinterpret_cast<const char *>(glGetString(GL_RENDERER)));
+    Logger::getInstance()->info("OpenGL renderer: " + renderer);
+
     Shader defaultShader("default");
 
     // TODO: move all rendering logic to renderlib
 
-    // pyramid yes
-    float vertices[] = {-0.5f, 0.0f, 0.5f,  0.83f, 0.70f, 0.44f, 0.0f, 0.0f,
-                        -0.5f, 0.0f, -0.5f, 0.83f, 0.7f,  0.44f, 5.0f, 0.0f,
-                        0.5f,  0.0f, -0.5f, 0.83,  0.70f, 0.44f, 0.0f, 0.0f,
-                        0.5f,  0.0f, 0.5f,  0.83f, 0.70f, 0.44f, 5.0,  0.0f,
-                        0.0f,  0.8f, 0.0f,  0.92f, 0.86f, 0.76f, 2.5f, 5.0f};
-
-    unsigned int indices[] = {0, 1, 2, 0, 2, 3, 0, 1, 4,
-                              1, 2, 4, 2, 3, 4, 3, 0, 4};
-
+    // pyramid mesh stuff
     VAO vao;
     vao.bind();
 
@@ -92,6 +107,38 @@ int main() {
     vbo.unbind();
     ebo.unbind();
 
+    glm::vec3 pyramidPos = glm::vec3(0.0f, 0.0f, 0.0f);
+    glm::mat4 pyramidModel = glm::mat4(1.0f);
+    pyramidModel = glm::translate(pyramidModel, pyramidPos);
+
+    // light cube mesh stuff
+    Shader lightShader("light");
+
+    VAO lVAO;
+    lVAO.bind();
+
+    VBO lVBO(lightVertices, sizeof(lightVertices));
+    EBO lEBO(lightIndices, sizeof(lightIndices));
+
+    lVAO.linkAttrib(lVBO, 0, 3, GL_FLOAT, 3 * sizeof(float), (void *)0);
+
+    lVAO.unbind();
+    lVBO.unbind();
+    lEBO.unbind();
+
+    glm::vec4 lightColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+    glm::vec3 lightPos = glm::vec3(0.5f, 0.5f, 0.5f);
+    glm::mat4 lightModel = glm::mat4(1.0f);
+    lightModel = glm::translate(lightModel, lightPos);
+
+    lightShader.use();
+    glUniformMatrix4fv(glGetUniformLocation(lightShader.getID(), "model"), 1,
+                       GL_FALSE, glm::value_ptr(lightModel));
+    defaultShader.use();
+    glUniformMatrix4fv(glGetUniformLocation(defaultShader.getID(), "model"), 1,
+                       GL_FALSE, glm::value_ptr(pyramidModel));
+
+    // textures
     RenderLib::Texture *texture = new RenderLib::Texture(
         PathHelper::getResourcePath({"assets", "textures", "Asphalt.jpg"}),
         GL_TEXTURE0);
@@ -123,20 +170,16 @@ int main() {
     // camera :O
     RenderLib::Camera camera(width, height, glm::vec3(0.0f, 0.0f, 2.0f));
 
-    std::string renderer(
-        reinterpret_cast<const char *>(glGetString(GL_RENDERER)));
-    Logger::getInstance()->info("OpenGL renderer: " + renderer);
-
     while (!glfwWindowShouldClose(window)) {
-        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+        glClearColor(0.122f, 0.635f, 0.82f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-        // use shader program
-        defaultShader.use();
 
         // cam matrix
         camera.inputs(window);
         camera.updateMatrix(45.0f, 0.1f, 100.0f);
+
+        defaultShader.use();
+
         camera.matrix(defaultShader.getID(), "camMatrix");
 
         // time related stuff
@@ -162,6 +205,13 @@ int main() {
         vao.bind();
         texture->bind();
         glDrawElements(GL_TRIANGLES, sizeof(indices) / sizeof(int),
+                       GL_UNSIGNED_INT, 0);
+
+        // draw light objects
+        lightShader.use();
+        camera.matrix(lightShader.getID(), "camMatrix");
+        lVAO.bind();
+        glDrawElements(GL_TRIANGLES, sizeof(lightIndices) / sizeof(int),
                        GL_UNSIGNED_INT, 0);
 
         // gui - title
